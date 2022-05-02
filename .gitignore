@@ -1,0 +1,6 @@
+# Ignore all excel files
+*.xlsx
+# Ignore all exe files
+*.exe
+# Ignore all icon files
+*.ico
