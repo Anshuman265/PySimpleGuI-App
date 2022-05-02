@@ -1,13 +1,13 @@
 import PySimpleGUI as sg
 import pandas as pd
 from datetime import datetime
+import os
 
 # add color to the window
 sg.theme('darkteal9')
-EXCEL_FILE_1 = "Book2.xlsx"
-EXCEL_FILE_2 = "Book1.xlsx"
-df = pd.read_excel(EXCEL_FILE_1)
-df = pd.read_excel(EXCEL_FILE_2)
+#EXCEL_FILE_2 = "excel_file_2.xlsx"
+#df = pd.read_excel(EXCEL_FILE_2)
+
 layout = [
     [sg.Text('Please fill out the following fields:')],
     [sg.Text('Sr.No', size=(15, 1)), sg.InputText(key='Sr.No')],
@@ -52,62 +52,20 @@ window = sg.Window(
 while True:
     event, values = window.read()
     # Data type of values is a dictionary
-    print(values['Sr.No'])
     if event == sg.WIN_CLOSED or event == 'Exit':
         break
     if event == 'Submit':
+        # df = df.append(values, ignore_index=True)
+        df = pd.DataFrame()
         df = df.append(values, ignore_index=True)
-        #df.drop('No of years',axis=1,inplace=True)
-        #df.drop('No of Days',axis=1,inplace=True)
-        print(df)
-        # if df.values['KM Clearance'=='Yes']
-        df.to_excel(EXCEL_FILE_2, index=False)
-        #df.drop('Name of Student',axis=1,inplace=True)
-        #df.drop('Roll No',axis=1,inplace=True)
-        #df.drop('Year of Joining',axis=1,inplace=True)
-        # df.drop('Category',axis=1,inplace=True)
-        # df.drop('Dept',axis=1,inplace=True)
-        #df.drop("Guide's Name",axis=1,inplace=True)
-        #df.drop('Date of Receiving Application',axis=1,inplace=True)
-        #df.drop('Days available for processing of Application for ITCommittee',axis=1,inplace=True)
-        #df.drop('Name of Conference',axis=1,inplace=True)
-        # df.drop('Region',axis=1,inplace=True)
-        #df.drop('From Date',axis=1,inplace=True)
-        #df.drop('To Date',axis=1,inplace=True)
-        #df.drop('Amount eligible',axis=1,inplace=True)
-        #df.drop('Request for',axis=1,inplace=True)
-        #df.drop('Amount Requested',axis=1,inplace=True)
-        #df.drop('KM Clearance',axis=1,inplace=True)
-        #df.drop('IFC Clearance',axis=1,inplace=True)
-        #df.drop('Reason or Remark',axis=1,inplace=True)
-        #df.drop('Place of Conference',axis=1,inplace=True)
-        #a2=df.at['To Date']
-        # #a=datetime(int(a1))
-        # b=datetime(int(a2))
-        # datetime.timedelta(7)
-        # d=(b-a).days
-        #df=df.append(d,key='No of Days',ignore_index=True)
-        window.find_element('Sr.No').Update('')
-        window.find_element('Name of Student').Update('')
-        window.find_element('Roll No').Update('')
-        window.find_element('Year of Joining').Update('')
-        window.find_element('Category').Update('')
-        window.find_element('Dept').Update('')
-        window.find_element("Guide's Name").Update('')
-        window.find_element('Date of Receiving Application').Update('')
-        window.find_element(
-            'Days available for processing of Application for ITCommittee').Update('')
-        window.find_element('Name of Conference').Update('')
-        window.find_element('Place of Conference').Update('')
-        window.find_element('Region').Update('')
-        window.find_element('From Date').Update('')
-        window.find_element('To Date').Update('')
-        window.find_element('Amount eligible').Update('')
-        window.find_element('Request for').Update('')
-        window.find_element('Amount Requested').Update('')
-        window.find_element('KM Clearance').Update('')
-        window.find_element('IFC Clearance').Update('')
-        window.find_element('Reason or Remark').Update('')
-
-
+        excelfilepath = os.getcwd()
+        excelfilepath += '\\excel_file_2.xlsx'
+        # print(df)
+        writer = pd.ExcelWriter(
+            excelfilepath, engine='openpyxl', mode='a', if_sheet_exists='overlay')
+        df.to_excel(writer, sheet_name="excel_file_2.xlsx",
+                    startrow=writer.sheets['excel_file_2.xlsx'].max_row, header=None, index=False)
+        writer.save()
+        for key in values:
+            window.find_element(key).Update('')
 window.close()
